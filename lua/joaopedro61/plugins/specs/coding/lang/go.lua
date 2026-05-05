@@ -1,3 +1,17 @@
+local has = require("joaopedro61.util.has")
+local function notify_missing(binary, title, help_url)
+  vim.notify(
+    ("**%s** not found in PATH, please install it.\n%s"):format(binary, help_url),
+    vim.log.levels.ERROR,
+    { title = title }
+  )
+end
+
+if not has("go", true) then
+  notify_missing("go", "go", "https://go.dev/dl/")
+  return {}
+end
+
 local lsp = require("joaopedro61.plugins.util.lsp")
 
 return {

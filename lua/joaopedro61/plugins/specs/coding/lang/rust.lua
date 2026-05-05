@@ -1,3 +1,18 @@
+local has = require("joaopedro61.util.has")
+
+local function notify_missing(binary, title, help_url)
+  vim.notify(
+    ("**%s** not found in PATH, please install it.\n%s"):format(binary, help_url),
+    vim.log.levels.ERROR,
+    { title = title }
+  )
+end
+
+if not has("rust-analyzer", true) then
+  notify_missing("rust-analyzer", "rustaceanvim", "https://rust-analyzer.github.io/")
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -86,13 +101,6 @@ return {
     },
     config = function(_, opts)
       vim.g.rustaceanvim = vim.tbl_deep_extend("keep", vim.g.rustaceanvim or {}, opts or {})
-      if vim.fn.executable("rust-analyzer") == 0 then
-        vim.notify(
-          "**rust-analyzer** not found in PATH, please install it.\nhttps://rust-analyzer.github.io/",
-          vim.log.levels.ERROR,
-          { title = "rustaceanvim" }
-        )
-      end
     end,
   },
 
