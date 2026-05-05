@@ -1,0 +1,24 @@
+{
+  "colorscheme": {
+    "name": "sonokai",
+    "variant": "transparent"
+  },
+  "auto_format": {
+    "enable": false,
+    "exclude": []
+  },
+  "lsp": {
+    "inlay_hint": {
+      "enable": true,
+      "exclude": []
+    },
+    "codelens": {
+      "enable": true,
+      "exclude": []
+    },
+    "diagnostics": {
+      "enable": true,
+      "exclude": []
+    }
+  }
+}
