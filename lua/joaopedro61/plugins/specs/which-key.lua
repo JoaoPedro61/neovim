@@ -26,6 +26,7 @@ return {
             return require("which-key.extras").expand.win()
           end,
         },
+        { "<leader>i", group = "ia" },
         { "<leader>c", group = "code" },
         { "<leader>e", group = "explorer" },
         { "<leader>u", group = "ui" },
