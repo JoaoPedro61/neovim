@@ -6,6 +6,7 @@ require("lazy").setup({
   spec = {
     { import = "joaopedro61.plugins.specs" },
     { import = "joaopedro61.plugins.specs.ui" },
+    { import = "joaopedro61.plugins.specs.ia" },
     { import = "joaopedro61.plugins.specs.editor" },
     { import = "joaopedro61.plugins.specs.coding" },
     { import = "joaopedro61.plugins.specs.coding.lang" },
