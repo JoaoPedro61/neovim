@@ -157,7 +157,7 @@ return {
 
       keymap.set("n", "<leader>ut", ":Themery<CR>", { desc = "Open theme picker" })
 
-      pcall(themery.setThemeByName, default_theme, true)
+      pcall(themery.setThemeByName, default_theme, false)
     end,
   },
 }
