@@ -6,7 +6,7 @@ return {
         extension = { mdx = "markdown.mdx" },
       })
 
-      table.insert(opts.ensure_installed, "markdown")
+      vim.list_extend(opts.ensure_installed, { "markdown", "markdown_inline" })
     end,
   },
   {
@@ -69,5 +69,46 @@ return {
         marksman = {},
       },
     },
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      code = {
+        sign = false,
+        width = "block",
+        right_pad = 1,
+      },
+      heading = {
+        sign = false,
+        icons = {},
+      },
+      checkbox = {
+        enabled = false,
+      },
+    },
+    ft = { "markdown", "markdown.mdx", "norg", "rmd", "org", "codecompanion" },
+    config = function(_, opts)
+      local render_markdown = require("render-markdown")
+      render_markdown.setup(opts)
+
+      local function set_keymap(buf)
+        vim.keymap.set("n", "<leader>ch", render_markdown.buf_toggle, {
+          buffer = buf,
+          desc = "Toggle render markdown highligths",
+        })
+      end
+
+      if vim.list_contains({ "markdown", "markdown.mdx" }, vim.bo.filetype) then
+        set_keymap(vim.api.nvim_get_current_buf())
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("joaopedro61_render_markdown", { clear = true }),
+        pattern = { "markdown", "markdown.mdx" },
+        callback = function(event)
+          set_keymap(event.buf)
+        end,
+      })
+    end,
   },
 }
