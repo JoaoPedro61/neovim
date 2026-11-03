@@ -4,9 +4,16 @@ Neovim configuration for my daily setup. It uses `lazy.nvim`, keeps a global `se
 
 ## Requirements
 
-- Neovim `0.11` or newer
-- `git`
-- A working `PATH` with the tools you actually use in your projects
+Install the host dependencies before starting Neovim. Platform-specific
+commands are split into focused guides:
+
+- [Required dependencies](./REQUIREMENTS.md)
+- [Language toolchains](./LANGUAGE_TOOLCHAINS.md)
+- [Optional integrations](./OPTIONAL_INTEGRATIONS.md)
+
+Mason automatically installs configured LSP servers, formatters, and linters.
+Tree-sitter installs the configured parsers. The guides cover only host tools
+that these managers cannot reliably provide.
 
 ## Installation
 
@@ -25,7 +32,9 @@ nvim
 
 4. Let `lazy.nvim` bootstrap itself on first launch.
 
-That is enough to get the config running. The root `init.lua` bootstraps `lazy.nvim`, loads settings, applies platform-specific behavior, and then loads the plugin specs.
+With the required dependencies installed, the root `init.lua` bootstraps
+`lazy.nvim`, loads settings, applies platform-specific behavior, and then loads
+the plugin specs.
 
 ## Settings
 
