@@ -70,7 +70,7 @@ function M.get_clients(opts)
     if opts and opts.method then
       ---@param client vim.lsp.Client
       ret = vim.tbl_filter(function(client)
-        return client.supports_method(opts.method, { bufnr = opts.bufnr })
+        return client:supports_method(opts.method, opts.bufnr)
       end, ret)
     end
   end
@@ -105,7 +105,7 @@ function M._check_methods(client, buffer)
   for method, clients in pairs(M._supports_method) do
     clients[client] = clients[client] or {}
     if not clients[client][buffer] then
-      if client.supports_method and client.supports_method(method, { bufnr = buffer }) then
+      if client.supports_method and client:supports_method(method, buffer) then
         clients[client][buffer] = true
         vim.api.nvim_exec_autocmds("User", {
           pattern = "LspSupportsMethod",
@@ -288,8 +288,8 @@ function M.formatter(opts)
       local clients = M.get_clients(lazy_util.merge({}, filter, { bufnr = buf }))
       ---@param client vim.lsp.Client
       local ret = vim.tbl_filter(function(client)
-        return client.supports_method("textDocument/formatting")
-          or client.supports_method("textDocument/rangeFormatting")
+        return client:supports_method("textDocument/formatting", buf)
+          or client:supports_method("textDocument/rangeFormatting", buf)
       end, clients)
       ---@param client vim.lsp.Client
       return vim.tbl_map(function(client)
@@ -365,7 +365,7 @@ function Keymaps.has(buffer, method)
 
   -- Check if any of the clients supports the specified method
   for _, client in ipairs(clients) do
-    if client.supports_method(method) then
+    if client:supports_method(method, buffer) then
       return true
     end
   end
@@ -470,29 +470,14 @@ function Servers.get_servers_to_install(servers)
   }
 end
 
---- Installs the specified LSP servers via Mason package manager.
+--- Ensures that the specified LSP servers are installed by Mason.
 ---
---- This function attempts to install the list of provided servers using the Mason package manager. It allows
---- for optional setup of each server using a handler function. If the Mason package is not found or the
---- server installation fails, no action is taken. The function also merges any servers defined in the
---- `ensure_installed` option of the `mason-lspconfig` plugin configuration.
+--- If Mason is available, this function combines the requested servers with
+--- `mason-lspconfig.nvim`'s `ensure_installed` option.
 ---
---- @param servers string[]: A list of LSP server names to be installed via Mason.
----   - Each string in the array represents the name of an LSP server to ensure is installed.
----
---- @param setup_handler fun(server: string): any?: An optional handler function to set up each Mason-managed LSP server.
----   - This function will be invoked for each server that is installed.
----   - The handler receives the server name as a string argument.
----
+--- @param servers string[]: LSP server names to install.
 --- @return nil
----
---- Example usage:
----   local servers = {"pyright", "tsserver"}
----   Servers.install_mason_servers(servers, function(server)
----     -- custom setup logic for each server
----     print("Setting up " .. server)
----   end)
-function Servers.install_mason_servers(servers, setup_handler)
+function Servers.install_mason_servers(servers)
   local have_mason, mlsp = pcall(require, "mason-lspconfig")
 
   if have_mason then
@@ -502,8 +487,7 @@ function Servers.install_mason_servers(servers, setup_handler)
         servers or {},
         plugin.opts("mason-lspconfig.nvim").ensure_installed or {}
       ),
-      handlers = { setup_handler },
-      automatic_installation = true,
+      automatic_enable = false,
     })
   end
 end

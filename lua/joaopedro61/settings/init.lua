@@ -199,12 +199,8 @@ function M.apply_buffer(bufnr)
     pcall(vim.lsp.inlay_hint.enable, M.is_enabled("lsp.inlay_hint", { bufnr = bufnr }), { bufnr = bufnr })
   end
 
-  if vim.lsp and vim.lsp.codelens then
-    if M.is_enabled("lsp.codelens", { bufnr = bufnr }) then
-      pcall(vim.lsp.codelens.refresh, { bufnr = bufnr })
-    else
-      pcall(vim.lsp.codelens.clear, nil, bufnr)
-    end
+  if vim.lsp and vim.lsp.codelens and vim.lsp.codelens.enable then
+    pcall(vim.lsp.codelens.enable, M.is_enabled("lsp.codelens", { bufnr = bufnr }), { bufnr = bufnr })
   end
 end
 

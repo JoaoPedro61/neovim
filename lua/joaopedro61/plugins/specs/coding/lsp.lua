@@ -8,7 +8,9 @@ return {
       "mason-org/mason.nvim",
     },
     opts = {
-      automatic_installation = true,
+      -- Servers are configured and enabled below after all plugin specs are merged.
+      -- Mason only installs their binaries.
+      automatic_enable = false,
     },
   },
   {
@@ -75,7 +77,11 @@ return {
         },
         {
           "<leader>cC",
-          vim.lsp.codelens.refresh,
+          function()
+            local filter = { bufnr = 0 }
+            vim.lsp.codelens.enable(false, filter)
+            vim.lsp.codelens.enable(true, filter)
+          end,
           desc = "Refresh & Display Codelens",
           mode = { "n" },
           has = "codeLens",
@@ -133,18 +139,7 @@ return {
       if vim.lsp.codelens then
         lsp.on_supports_method("textDocument/codeLens", function(_, buffer)
           if settings.is_enabled("lsp.codelens", { bufnr = buffer }) and lsp.is_valid_buf(buffer) then
-            local group = vim.api.nvim_create_augroup("nvim-lsp-codelens-" .. buffer, { clear = true })
-
-            vim.api.nvim_create_autocmd({
-              "BufEnter",
-              "InsertLeave",
-            }, {
-              group = group,
-              buffer = buffer,
-              callback = function()
-                vim.lsp.codelens.refresh({ bufnr = buffer })
-              end,
-            })
+            vim.lsp.codelens.enable(true, { bufnr = buffer })
           end
         end)
       end
@@ -174,14 +169,16 @@ return {
         end
         if not vim.tbl_contains(multi_instance_control, server) then
           multi_instance_control[#multi_instance_control + 1] = server
-          -- This fixies the migration of lspconfig to vim.lsp.config
-          -- The mason-lspconfig will still use lspconfig to setup the servers
           vim.lsp.config(server, server_opts)
+          vim.lsp.enable(server)
         end
       end
 
       if servers_installer.mason then
-        lsp.servers.install_mason_servers(servers_installer.mason, setup)
+        for _, server_name in ipairs(servers_installer.mason) do
+          setup(server_name)
+        end
+        lsp.servers.install_mason_servers(servers_installer.mason)
       end
 
       if servers_installer.custom then
