@@ -38,9 +38,6 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    dependencies = {
-      { import = "joaopedro61.plugins.specs.coding.lang.typescript" },
-    },
     opts = {
       servers = {
         angularls = {},
