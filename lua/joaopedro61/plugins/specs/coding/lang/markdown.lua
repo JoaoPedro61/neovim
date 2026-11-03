@@ -10,18 +10,15 @@ return {
     end,
   },
   {
+    "mason-org/mason.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, { "markdownlint-cli2", "markdown-toc" })
+    end,
+  },
+  {
     "stevearc/conform.nvim",
-    dependencies = {
-      {
-        "williamboman/mason.nvim",
-        opts = {
-          ensure_installed = {
-            "markdownlint-cli2",
-            "markdown-toc",
-          },
-        },
-      },
-    },
+    dependencies = {},
     opts = {
       formatters = {
         ["markdown-toc"] = {
@@ -52,12 +49,11 @@ return {
     "mfussenegger/nvim-lint",
     dependencies = {
       {
-        "williamboman/mason.nvim",
-        opts = {
-          ensure_installed = {
-            "markdownlint-cli2",
-          },
-        },
+        "mason-org/mason.nvim",
+        opts = function(_, opts)
+          opts.ensure_installed = opts.ensure_installed or {}
+          vim.list_extend(opts.ensure_installed, { "markdownlint-cli2" })
+        end,
       },
     },
     opts = {

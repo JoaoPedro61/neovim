@@ -3,10 +3,7 @@ return {
     "mfussenegger/nvim-lint",
     dependencies = {
       {
-        "williamboman/mason.nvim",
-        opts = {
-          ensure_installed = {},
-        },
+        "mason-org/mason.nvim",
       },
     },
     event = { "BufReadPost", "BufNewFile", "BufWritePre" },
